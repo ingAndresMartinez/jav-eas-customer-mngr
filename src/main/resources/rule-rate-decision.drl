@@ -1,0 +1,125 @@
+global com.javeriana.aes.managers.drools.RateDecisionMarketOutput output;
+dialect  "mvel"
+
+/**************************************************************************************************
+
+______________________________________________________________________________________________
+Rangos	        30 días         <=60 días       <=90 días       <=180 días      >=180 días
+                Tasa Hasta	    Tasa Hasta      Tasa Hasta      Tasa Hasta      Tasa Hasta
+______________________________________________________________________________________________
+De $100.000
+a $2.999.999      3.00%           3.70%           4.10%          4.35%           4.70%
+______________________________________________________________________________________________
+De $3.000.000
+a $5.999.999      3.00%           3.70%           4.20%           4.40%          4.80%
+______________________________________________________________________________________________
+De 6.000.000
+a $199.999.999    3.00%           3.70%           4.25%           4.45%          4.90%
+______________________________________________________________________________________________
+
+**************************************************************************************************/
+
+rule "Calculate Rate - [$100.000 TO $2.999.999] Scenario 1"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 100000 && amount <= 2999999 && term <= 30);
+    then
+        output.setRate(3.00);
+end
+
+rule "Calculate Rate - [$100.000 TO $2.999.999] Scenario 2"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 100000 && amount <= 2999999 && term >= 31 && term <= 60);
+    then
+        output.setRate(3.70);
+end
+
+rule "Calculate Rate - [$100.000 TO $2.999.999] Scenario 3"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 100000 && amount <= 2999999 && term >= 61 && term <= 90);
+    then
+        output.setRate(4.10);
+end
+
+rule "Calculate Rate - [$100.000 TO $2.999.999] Scenario 4"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 100000 && amount <= 2999999 && term >= 91 && term <= 180);
+    then
+        output.setRate(4.35);
+end
+
+rule "Calculate Rate - [$100.000 TO $2.999.999] Scenario 5"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 100000 && amount <= 2999999 && term >= 181);
+    then
+        output.setRate(4.70);
+end
+
+rule "Calculate Rate - [$3.000.000 TO $5.999.999] Scenario 1"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 3000000 && amount <= 5999999 && term <= 30);
+    then
+        output.setRate(3.00);
+end
+
+rule "Calculate Rate - [$3.000.000 TO $5.999.999] Scenario 2"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 3000000 && amount <= 5999999 && term >= 31 && term <= 60);
+    then
+        output.setRate(3.70);
+end
+
+rule "Calculate Rate - [$3.000.000 TO $5.999.999] Scenario 3"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 3000000 && amount <= 5999999 && term >= 61 && term <= 90);
+    then
+        output.setRate(4.20);
+end
+
+rule "Calculate Rate - [$3.000.000 TO $5.999.999] Scenario 4"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 3000000 && amount <= 5999999 && term >= 91 && term <= 180);
+    then
+        output.setRate(4.40);
+end
+
+rule "Calculate Rate - [$3.000.000 TO $5.999.999] Scenario 5"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 3000000 && amount <= 5999999 && term >= 181);
+    then
+        output.setRate(4.80);
+end
+
+rule "Calculate Rate - [$6.000.000 TO $199.999.999] Scenario 1"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 6000000 && amount <= 199999999 && term <= 30);
+    then
+        output.setRate(3.00);
+end
+
+rule "Calculate Rate - [$6.000.000 TO $199.999.999] Scenario 2"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 6000000 && amount <= 199999999 && term >= 31 && term <= 60);
+    then
+        output.setRate(3.70);
+end
+
+rule "Calculate Rate - [$6.000.000 TO $199.999.999] Scenario 3"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 6000000 && amount <= 199999999 && term >= 61 && term <= 90);
+    then
+        output.setRate(4.25);
+end
+
+rule "Calculate Rate - [$6.000.000 TO $199.999.999] Scenario 4"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 6000000 && amount <= 199999999 && term >= 91 && term <= 180);
+    then
+        output.setRate(4.45);
+end
+
+rule "Calculate Rate - [$6.000.000 TO $199.999.999] Scenario 5"
+    when
+        inputInstance:com.javeriana.aes.managers.drools.RateDecisionMarketInput(amount >= 6000000 && amount <= 199999999 && term >= 181);
+    then
+        output.setRate(4.90);
+end
