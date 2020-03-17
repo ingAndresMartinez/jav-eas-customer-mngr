@@ -2,10 +2,12 @@ package com.javeriana.aes.managers.service.impl;
 
 import com.javeriana.aes.managers.dto.ProductDto;
 import com.javeriana.aes.managers.dto.RequestProductDto;
+import com.javeriana.aes.managers.entities.CdtProductEntity;
 import com.javeriana.aes.managers.entities.ClientEntity;
 import com.javeriana.aes.managers.entities.ProductEntity;
 import com.javeriana.aes.managers.entities.ProductRequestEntity;
 import com.javeriana.aes.managers.mappers.ProductMapper;
+import com.javeriana.aes.managers.repositories.ICdtProductRepository;
 import com.javeriana.aes.managers.repositories.IClientRepository;
 import com.javeriana.aes.managers.repositories.IProductRepository;
 import com.javeriana.aes.managers.repositories.IProductRequestRepository;
@@ -25,6 +27,7 @@ public class ProductServiceImpl implements IProductService {
     private IClientRepository clientRepository;
     private IProductRequestRepository productRequestRepository;
     private IProductRepository productRepository;
+    private ICdtProductRepository cdtProductRepository;
 
     @Override
     public ProductDto getProductByClientAndProductType(String identificationNumber, int productType) {
@@ -56,6 +59,8 @@ public class ProductServiceImpl implements IProductService {
         productRequestEntity.setAccepted(true);
         productRequestRepository.save(productRequestEntity);
         if (productDto.getProductType() == CDT) {
+            CdtProductEntity cdtProductEntity = ProductMapper.productRequestDtoMapperInCdtProduct(productDto, newProduct);
+            cdtProductRepository.save(cdtProductEntity);
             ProductEntity productEntity = productRepository.findByProductTypeAndClientIdentification(productDto.getIdentificationNumber(), SAVING_ACCOUNT).orElseThrow(IllegalArgumentException::new);
             productEntity.setBalance(productEntity.getBalance() - productDto.getBalance());
             productRepository.save(productEntity);
@@ -72,9 +77,13 @@ public class ProductServiceImpl implements IProductService {
         this.productRequestRepository = productRequestRepository;
     }
 
-
     @Autowired
     public void setProductRepository(IProductRepository productRepository) {
         this.productRepository = productRepository;
+    }
+
+    @Autowired
+    public void setCdtProductRepository(ICdtProductRepository cdtProductRepository) {
+        this.cdtProductRepository = cdtProductRepository;
     }
 }

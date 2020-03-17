@@ -35,4 +35,12 @@ public class ProductMapper {
         return productRequestEntity;
     }
 
+    public static CdtProductEntity productRequestDtoMapperInCdtProduct(ProductDto productDto, ProductEntity productEntity) {
+        CdtProductEntity cdtProductEntity = new CdtProductEntity();
+        cdtProductEntity.setProduct(productEntity);
+        cdtProductEntity.setRate(productDto.getRate());
+        cdtProductEntity.setTerm(productDto.getTerm());
+        return cdtProductEntity;
+    }
+
 }
