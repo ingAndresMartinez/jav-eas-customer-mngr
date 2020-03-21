@@ -5,7 +5,6 @@ import java.util.List;
 
 public class CustomerDto extends identificationDto {
 
-
     private String firstName;
     private String lastName;
     private int genderType;

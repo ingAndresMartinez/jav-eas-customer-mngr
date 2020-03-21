@@ -17,9 +17,16 @@ import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.javeriana.aes.managers.dto.DocumentDto;
+import com.javeriana.aes.managers.entities.CdtProductEntity;
+import com.javeriana.aes.managers.entities.ClientEntity;
+import com.javeriana.aes.managers.entities.ProductEntity;
+import com.javeriana.aes.managers.repositories.ICdtProductRepository;
+import com.javeriana.aes.managers.repositories.IClientRepository;
+import com.javeriana.aes.managers.repositories.IProductRepository;
 import com.javeriana.aes.managers.service.IMockService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +47,17 @@ public class MockServiceImpl implements IMockService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MockServiceImpl.class);
 
+    private IClientRepository clientRepository;
+    private IProductRepository productRepository;
+    private ICdtProductRepository cdtProductRepository;
+
     @Override
     public String generatePdf(DocumentDto documentDto) throws FileNotFoundException, DocumentException {
+
+        ClientEntity clientEntity = clientRepository.findByIdentificationNumber(documentDto.getIdentificationNumber()).orElseThrow(IllegalArgumentException::new);
+        ProductEntity productEntity = productRepository.findByRequestId(documentDto.getRequestId()).orElseThrow(IllegalArgumentException::new);
+        CdtProductEntity cdtProductEntity = cdtProductRepository.findByProductId(productEntity.getId()).orElseThrow(IllegalArgumentException::new);
+
         Document document = new Document();
         UUID uuid = UUID.randomUUID();
         String fileName = path.concat("/").concat(uuid.toString()).concat(".pdf");
@@ -51,16 +67,16 @@ public class MockServiceImpl implements IMockService {
         document.add(new Paragraph("Deceval - Titulo Valor -", font));
 
         StringBuilder content = new StringBuilder("_______________________________".concat("\n"));
-        content.append("Cliente: ").append(documentDto.getCustomerDto().getFirstName()).append(documentDto.getCustomerDto().getLastName()).append("\n");
-        content.append("Numero Documento: ").append(documentDto.getCustomerDto().getIdentificationNumber()).append("\n");
+        content.append("Cliente: ").append(clientEntity.getFirstName()).append(clientEntity.getLastName()).append("\n");
+        content.append("Numero Documento: ").append(clientEntity.getIdentificationNumber()).append("\n");
         content.append("_______________________________").append("\n");
-        content.append("Numero Cuenta: ").append(documentDto.getProductDto().getAccountNumber()).append("\n");
-        content.append("Monto: ").append(documentDto.getProductDto().getBalance()).append("\n");
-        content.append("Plazo: ").append(documentDto.getProductDto().getTerm()).append("\n");
-        content.append("Tasa: ").append(documentDto.getProductDto().getRate()).append("\n");
+        content.append("Numero Cuenta: ").append(productEntity.getAccountNumber()).append("\n");
+        content.append("Monto: ").append(productEntity.getBalance()).append("\n");
+        content.append("Plazo: ").append(cdtProductEntity.getTerm()).append("\n");
+        content.append("Tasa: ").append(cdtProductEntity.getRate()).append("\n");
         document.add(new Paragraph(content.toString(), font));
         document.close();
-        setDocumentInS3(documentDto.getCustomerDto().getIdentificationNumber(), fileName);
+        setDocumentInS3(clientEntity.getIdentificationNumber(), fileName);
         return fileName;
     }
 
@@ -128,4 +144,18 @@ public class MockServiceImpl implements IMockService {
         this.secretKey = secretKey;
     }
 
+    @Autowired
+    public void setClientRepository(IClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
+
+    @Autowired
+    public void setProductRepository(IProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
+    @Autowired
+    public void setCdtProductRepository(ICdtProductRepository cdtProductRepository) {
+        this.cdtProductRepository = cdtProductRepository;
+    }
 }

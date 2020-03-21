@@ -18,4 +18,10 @@ public interface IProductRepository extends CrudRepository<ProductEntity, Intege
             "AND c.identificationNumber = :identificationNumber")
     Optional<ProductEntity> findByProductTypeAndClientIdentification(@Param("identificationNumber") String identificationNumber, @Param("productType") int productType);
 
+    @Query("SELECT p FROM ProductEntity p " +
+            "INNER JOIN ProductRequestEntity pr " +
+            "ON p.productRequest = pr.id " +
+            "AND pr.id = :requestId ")
+    Optional<ProductEntity> findByRequestId(@Param("requestId") int requestId);
+
 }

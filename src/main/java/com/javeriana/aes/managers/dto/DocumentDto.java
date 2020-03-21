@@ -2,22 +2,23 @@ package com.javeriana.aes.managers.dto;
 
 public class DocumentDto {
 
-    private CustomerDto customerDto;
-    private ProductDto productDto;
+    private String identificationNumber;
+    private int requestId;
 
-    public CustomerDto getCustomerDto() {
-        return customerDto;
+    public String getIdentificationNumber() {
+        return identificationNumber;
     }
 
-    public void setCustomerDto(CustomerDto customerDto) {
-        this.customerDto = customerDto;
+    public void setIdentificationNumber(String identificationNumber) {
+        this.identificationNumber = identificationNumber;
     }
 
-    public ProductDto getProductDto() {
-        return productDto;
+    public int getRequestId() {
+        return requestId;
     }
 
-    public void setProductDto(ProductDto productDto) {
-        this.productDto = productDto;
+    public void setRequestId(int requestId) {
+        this.requestId = requestId;
     }
+
 }

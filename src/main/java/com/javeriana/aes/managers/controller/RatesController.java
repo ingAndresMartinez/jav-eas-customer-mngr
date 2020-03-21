@@ -12,7 +12,7 @@ public class RatesController {
 
     private RateDecisionMarketService rateDecisionMarketService;
 
-    @GetMapping
+    @PostMapping
     public RateDecisionMarketOutput getSavingAccount(@RequestBody RateDecisionMarketInput rateDecisionMarketInput) {
         RateDecisionMarketOutput rateDecisionMarketOutput = new RateDecisionMarketOutput();
         rateDecisionMarketService.calculateRate(rateDecisionMarketInput, rateDecisionMarketOutput);
