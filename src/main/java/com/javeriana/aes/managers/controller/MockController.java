@@ -5,10 +5,7 @@ import com.itextpdf.text.*;
 import com.javeriana.aes.managers.dto.DocumentDto;
 import com.javeriana.aes.managers.service.IMockService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
 
@@ -21,6 +18,11 @@ public class MockController {
     @PostMapping(value = "/deceval")
     public String createClient(@RequestBody DocumentDto documentDto) throws FileNotFoundException, DocumentException {
         return mockService.generatePdf(documentDto);
+    }
+
+    @GetMapping("/black-list/{identificationNumber}")
+    public boolean createClient(@PathVariable String identificationNumber) {
+        return mockService.validateBackList(identificationNumber);
     }
 
     @Autowired

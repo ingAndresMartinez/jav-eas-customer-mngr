@@ -80,6 +80,15 @@ public class MockServiceImpl implements IMockService {
         return fileName;
     }
 
+    @Override
+    public boolean validateBackList(String identificationNumber) {
+        int iden = Integer.parseInt(identificationNumber);
+        if (iden >= 60000000 && iden <= 69999999) {
+            return true;
+        }
+        return false;
+    }
+
     private void setDocumentInS3(String identificationNumber, String fileName) {
         File file = new File(fileName);
         long contentLength = file.length();

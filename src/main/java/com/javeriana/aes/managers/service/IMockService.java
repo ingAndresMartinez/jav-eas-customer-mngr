@@ -9,4 +9,5 @@ public interface IMockService {
 
     String generatePdf(DocumentDto documentDto) throws FileNotFoundException, DocumentException;
 
+    boolean validateBackList(String identificationNumber);
 }
