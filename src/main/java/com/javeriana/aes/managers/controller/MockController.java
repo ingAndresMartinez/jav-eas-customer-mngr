@@ -2,6 +2,7 @@ package com.javeriana.aes.managers.controller;
 
 import com.itextpdf.text.*;
 
+import com.javeriana.aes.managers.dto.BlackListResponseDto;
 import com.javeriana.aes.managers.dto.DocumentDto;
 import com.javeriana.aes.managers.service.IMockService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class MockController {
     }
 
     @GetMapping("/black-list/{identificationNumber}")
-    public boolean createClient(@PathVariable String identificationNumber) {
+    public BlackListResponseDto createClient(@PathVariable String identificationNumber) {
         return mockService.validateBackList(identificationNumber);
     }
 

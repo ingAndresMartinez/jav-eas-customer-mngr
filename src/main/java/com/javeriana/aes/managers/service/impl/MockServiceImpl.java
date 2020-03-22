@@ -16,10 +16,13 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.javeriana.aes.managers.dto.BlackListResponseDto;
 import com.javeriana.aes.managers.dto.DocumentDto;
+import com.javeriana.aes.managers.entities.BlackListEntity;
 import com.javeriana.aes.managers.entities.CdtProductEntity;
 import com.javeriana.aes.managers.entities.ClientEntity;
 import com.javeriana.aes.managers.entities.ProductEntity;
+import com.javeriana.aes.managers.repositories.IBlackListRepository;
 import com.javeriana.aes.managers.repositories.ICdtProductRepository;
 import com.javeriana.aes.managers.repositories.IClientRepository;
 import com.javeriana.aes.managers.repositories.IProductRepository;
@@ -50,6 +53,7 @@ public class MockServiceImpl implements IMockService {
     private IClientRepository clientRepository;
     private IProductRepository productRepository;
     private ICdtProductRepository cdtProductRepository;
+    private IBlackListRepository blackListRepository;
 
     @Override
     public String generatePdf(DocumentDto documentDto) throws FileNotFoundException, DocumentException {
@@ -81,12 +85,19 @@ public class MockServiceImpl implements IMockService {
     }
 
     @Override
-    public boolean validateBackList(String identificationNumber) {
+    public BlackListResponseDto validateBackList(String identificationNumber) {
+        BlackListResponseDto blackListResponseDto = new BlackListResponseDto();
         int iden = Integer.parseInt(identificationNumber);
         if (iden >= 60000000 && iden <= 69999999) {
-            return true;
+            blackListResponseDto.setBlocked(true);
+            ClientEntity clientEntity = clientRepository.findByIdentificationNumber(identificationNumber).orElse(null);
+            if(clientEntity != null) {
+                BlackListEntity blackListEntity = new BlackListEntity();
+                blackListEntity.setClient(clientEntity);
+                blackListRepository.save(blackListEntity);
+            }
         }
-        return false;
+        return blackListResponseDto;
     }
 
     private void setDocumentInS3(String identificationNumber, String fileName) {
@@ -166,5 +177,10 @@ public class MockServiceImpl implements IMockService {
     @Autowired
     public void setCdtProductRepository(ICdtProductRepository cdtProductRepository) {
         this.cdtProductRepository = cdtProductRepository;
+    }
+
+    @Autowired
+    public void setBlackListRepository(IBlackListRepository blackListRepository) {
+        this.blackListRepository = blackListRepository;
     }
 }
